@@ -13,7 +13,7 @@ resource "google_compute_instance_group_manager" "appserver" {
   target_size  = 2
 
   named_port {
-    name = "customHTTP"
+    name = "customhttp"
     port = 8888
   }
 
@@ -25,6 +25,8 @@ resource "google_compute_instance_group_manager" "appserver" {
 
 resource "google_compute_target_pool" "appserver" {
   name = "instance-pool"
+  project =""
+  region = "us-central1"
 
   instances = [
     "us-central1-a/myinstance1",
@@ -51,7 +53,7 @@ resource "google_service_account" "default" {
 resource "google_compute_instance_template" "default" {
   name        = "appserver-template"
   description = "This template is used to create app server instances."
-
+  region = "us-central1"
   tags = ["foo", "bar"]
 
   labels = {
@@ -77,15 +79,16 @@ resource "google_compute_instance_template" "default" {
   }
 
   // Use an existing disk resource
-  disk {
+  /**disk {
     // Instance Templates reference disks by name, not self link
     source      = google_compute_disk.foobar.name
     auto_delete = false
     boot        = false
-  }
+  }*/
 
   network_interface {
     network = "default"
+    subnetwork = "us-central1"
   }
 
   metadata = {
