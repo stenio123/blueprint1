@@ -23,6 +23,25 @@ resource "google_compute_instance_group_manager" "appserver" {
   }*/
 }
 
+resource "google_compute_target_pool" "appserver" {
+  name = "instance-pool"
+
+  instances = [
+    "us-central1-a/myinstance1",
+    "us-central1-b/myinstance2",
+  ]
+
+  health_checks = [
+    google_compute_http_health_check.default.name,
+  ]
+}
+
+resource "google_compute_http_health_check" "default" {
+  name               = "default"
+  request_path       = "/"
+  check_interval_sec = 1
+  timeout_sec        = 1
+}
 
 resource "google_service_account" "default" {
   account_id   = "service-account-id"
